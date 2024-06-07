@@ -107,31 +107,73 @@
     left: 6rem;
 }
 
+.game-audio.active{
+    scale: 1.1;
+}
+
 .music-btn{
     position: relative;
     background: none;
     border: none;
     border-radius: 50%;
-    background-color: var(--colorDark2);
+    background-color: #deeaff;
+    border: 1px solid rgba(85, 85, 85, 0.896);
     cursor: pointer;
     width: 50px;
     height: 50px;
 }
 
+.music-btn.active{
+    background-color: #5ea6ff;
+    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.392);
+}
+
 .music-btn .music-img{
-    filter: invert(100%);
+    filter: invert(40%);
     position: absolute;
     top: 0;
     left: 0;
     transform: translateX(70%) translateY(70%);
 }
 
-#slash{
-    transform: translateX(60%) translateY(55%);
+.music-btn .music-img.active{
+    filter: invert(100%);
 }
 
-#slash.hide{
-    display: none;
+
+.tooltip {
+    position: absolute;
+    display: inline-block;
+    font-size: 0.75rem;
+}
+  
+/* Tooltip text */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    background-color: #6b83a399;
+    border: 1px solid #dbe2ef79;
+    color: #fff;
+    text-align: center;
+    padding: 2px 4px;
+    border-radius: 6px;
+  
+    /* Position the tooltip text */
+    position: absolute;
+    bottom: 85%;
+    right: -80%;
+  
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+  
+  
+  
+  /* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
 }
 
 input[type = radio]{
