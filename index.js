@@ -1,26 +1,51 @@
+// JS code
+
+
+// Handle music button
 const audio = document.querySelector('#bg-music');
-const slash = document.querySelector('#slash');
+const musicBtn = document.querySelector('.music-btn');
+const musicImg = document.querySelector('.music-img');
+const gameAudio = document.querySelector('.game-audio');
+const tooltiptext = document.querySelector('.tooltiptext');
 let playing = false;
 function handleMusic(){
+    // console.log(musicImg);
     if(playing){
         audio.pause();
         playing = false;
-        if(!slash.classList.contains('hide')){
-            slash.classList.add('hide');
+        if(musicBtn.classList.contains('active')){
+            musicBtn.classList.remove('active');
         }
+        if(musicImg.classList.contains('active')){
+            musicImg.classList.remove('active');
+        }
+        if(gameAudio.classList.contains('active')){
+            gameAudio.classList.remove('active');
+        }
+        tooltiptext.style.scale = '1';
     }
     else{
         audio.play();
         playing = true;
-        if(slash.classList.contains('hide')){
-            slash.classList.remove('hide');
+        if(!musicBtn.classList.contains('active')){
+            musicBtn.classList.add('active');
         }
+        if(!musicImg.classList.contains('active')){
+            musicImg.classList.add('active');
+        }
+        if(!gameAudio.classList.contains('active')){
+            gameAudio.classList.add('active');
+        }
+        tooltiptext.style.scale = '0.9';
     }
 }
 
+
+// Handle submenu for play with computer and multiplayer
 const subMenuCont = document.querySelector('.submenu-container');
 const form1 = document.querySelector('#myform');
 const form2 = document.querySelector('#myform2');
+
 function showComputerMenu(){
     if(form1.classList.contains('hide')){
         form1.classList.remove('hide');
@@ -32,7 +57,6 @@ function showComputerMenu(){
         subMenuCont.classList.add('active');
     }
 }
-
 function showMultiMenu(){
     if(!form1.classList.contains('hide')){
         form1.classList.add('hide');
@@ -45,47 +69,89 @@ function showMultiMenu(){
     }
 }
 
-const roundNumberEle = document.querySelector('#round-number-ele');
-const gameLayout = document.querySelector('.game-layout');
-const roundNumberDiv = document.querySelector('.round-number-div');
+// active and hide function
 
-const menu = document.querySelector('.menu');
-const gameUI = document.querySelector('.game-ui');
-const listeners = [];
-let inputCount;
-
-
-function playWithComp(){
-    initGame();
-    roundNumberEle.innerHTML = '1';
-    inputCount = document.querySelector('#input-count').value;
-    // console.log(menu);
-    
+function menuRemoveActive(){
     if(menu.classList.contains('active')){
         menu.classList.remove('active');
     }
+}
+function form1AddHide(){
     if(!form1.classList.contains('hide')){
         form1.classList.add('hide');
     }
+}
+function form2AddHide(){
     if(!form2.classList.contains('hide')){
         form2.classList.add('hide');
     }
+}
+function gameLayoutRemoveHide(){
     if(gameLayout.classList.contains('hide')){
         gameLayout.classList.remove('hide');
     }
+}
+function roundNumberDivRemoveHide(){
     if(roundNumberDiv.classList.contains('hide')){
         roundNumberDiv.classList.remove('hide');
     }
+}
+function gameUIAddActive(){
     if(!gameUI.classList.contains('active')){
         gameUI.classList.add('active');
     }
-    
+}
+function removePreviousListenersFromCells(){
     if(listeners.length !== 0){
         for(let index = 0; index<9; index++){
             boxes[index].removeEventListener('click', listeners[index]);
         }
         listeners.length = 0;
     }
+}
+function gameOverMenuRemoveActive(){
+    if(gameOverMenu.classList.contains('active')){
+        gameOverMenu.classList.remove('active');
+    }
+}
+
+function gameUIRemoveActive(){
+    if(gameUI.classList.contains('active')){
+        gameUI.classList.remove('active')
+    }
+}
+function menuAddActive(){
+    if(!menu.classList.contains('active')){
+        menu.classList.add('active');
+    }
+}
+
+// For handling User input of play-with-computer and multiplayer
+const roundNumberEle = document.querySelector('#round-number-ele');
+const gameLayout = document.querySelector('.game-layout');
+const roundNumberDiv = document.querySelector('.round-number-div');
+const menu = document.querySelector('.menu');
+const gameUI = document.querySelector('.game-ui');
+const listeners = [];
+let inputCount;
+let difficultyLevel;
+
+
+function playWithComp(){
+    initGame();
+    roundNumberEle.innerHTML = '1';
+    difficultyLevel = document.querySelector('input[type = "radio"]:checked').id;
+    inputCount = document.querySelector('#input-count').value;
+    // console.log(menu);
+    
+    menuRemoveActive();
+    form1AddHide();
+    form2AddHide();
+    gameLayoutRemoveHide();
+    roundNumberDivRemoveHide();
+    gameUIAddActive();
+    
+    removePreviousListenersFromCells();
 
     for(let index = 0; index<9; index++){
         
@@ -102,31 +168,14 @@ function playMulti(){
     roundNumberEle.innerHTML = '1';
     inputCount = document.querySelector('#input-count2').value;
 
-    if(menu.classList.contains('active')){
-        menu.classList.remove('active');
-    }
-    if(!form1.classList.contains('hide')){
-        form1.classList.add('hide');
-    }
-    if(!form2.classList.contains('hide')){
-        form2.classList.add('hide');
-    }
-    if(gameLayout.classList.contains('hide')){
-        gameLayout.classList.remove('hide');
-    }
-    if(roundNumberDiv.classList.contains('hide')){
-        roundNumberDiv.classList.remove('hide');
-    }
-    if(!gameUI.classList.contains('active')){
-        gameUI.classList.add('active');
-    }
+    menuRemoveActive();
+    form1AddHide();
+    form2AddHide();
+    gameLayoutRemoveHide();
+    roundNumberDivRemoveHide();
+    gameUIAddActive();
 
-    if(listeners.length !== 0){
-        for(let index = 0; index<9; index++){
-            boxes[index].removeEventListener('click', listeners[index]);
-        }
-        listeners.length = 0;
-    }
+    removePreviousListenersFromCells();
 
     for(let index = 0; index<9; index++){
         
@@ -138,13 +187,14 @@ function playMulti(){
     return false;
 }
 
+
+// Game Initialization
 const boxes = document.querySelectorAll('.box');
-let currentPlayerEle = document.querySelector('#player-sign');
+let currentPlayer;
 const playerXScoreEle = document.querySelector('.player1-win-count');
 const tieEle = document.querySelector('.tie-count');
 const playerOScoreEle = document.querySelector('.player2-win-count');
 const gameOverMenu = document.querySelector('.game-over-menu');
-
 const winningCongfig = [
     [0,1,2],
     [3,4,5],
@@ -158,9 +208,11 @@ const winningCongfig = [
 let gameStatus;
 let possibleIndexForComp;
 let occupiedCells
+let msgg = document.querySelector('#msgg');
 
 function initGame(){
     gameStatus = ['', '', '', '', '', '', '', '', '',];
+    currentPlayer = 'X'
     occupiedCells = 0;
     possibleIndexForComp = [0,1,2,3,4,5,6,7,8];
     playerXScoreEle.innerHTML = '0';
@@ -172,31 +224,20 @@ function initGame(){
         boxes[i].classList = `box box${i+1}`;
     }
     msgg.innerHTML = 'Current player: (<span id="player-sign">X</span>)';
-    currentPlayerEle.innerHTML = 'X';
 
-    if(gameOverMenu.classList.contains('active')){
-        gameOverMenu.classList.remove('active');
-    }
-    if(!gameUI.classList.contains('active')){
-        gameUI.classList.add('active')
-    }
+    gameOverMenuRemoveActive();
+    gameUIAddActive();
 }
 
 function showMenu(){
-    if(gameOverMenu.classList.contains('active')){
-        gameOverMenu.classList.remove('active');
-    }
-    if(gameUI.classList.contains('active')){
-        gameUI.classList.remove('active')
-    }
-    if(!menu.classList.contains('active')){
-        menu.classList.add('active');
-    }
+    gameOverMenuRemoveActive();
+    gameUIRemoveActive();
+    menuAddActive();
 }
 
-function checkGameOver(occupiedCells){
+function checkMatchOver(occupiedCells){
     let winner;
-    let msgg = document.querySelector('#msgg');
+    msgg = document.querySelector('#msgg');
     for(let i=0; i<winningCongfig.length; i++){
         if((gameStatus[winningCongfig[i][0]] !== '' || gameStatus[winningCongfig[i][1]] !== '' || gameStatus[winningCongfig[i][0]] !== '') && ((gameStatus[winningCongfig[i][0]] === gameStatus[winningCongfig[i][1]]) && (gameStatus[winningCongfig[i][1]] === gameStatus[winningCongfig[i][2]]))){
             // Make boxes green
@@ -230,14 +271,56 @@ function checkGameOver(occupiedCells){
     return false;
 }
 
+function checkGameOver(){
+    let roundNumber = roundNumberEle.innerHTML;
+    if(roundNumber >= inputCount){
+        let winningMessage;
 
+        if(playerXScoreEle.innerHTML > playerOScoreEle.innerHTML){
+            winningMessage = 'Congrantulations!<br>Player(X) Won the Game!!!';
+        }
+        else if(playerXScoreEle.innerHTML < playerOScoreEle.innerHTML){
+            winningMessage = 'Congrantulations!<br>Player(O) Won the Game!!!';
+        }
+        else{
+            winningMessage = 'Game Tied!';
+        }
+        msgg.innerHTML = `${winningMessage}`;
+        if(!gameLayout.classList.contains('hide')){
+            gameLayout.classList.add('hide');
+        }
+        if(!roundNumberDiv.classList.contains('hide')){
+            roundNumberDiv.classList.add('hide');
+        }
+        if(!gameOverMenu.classList.contains('active')){
+            gameOverMenu.classList.add('active');
+        }
+    }
+    else{
+        gameStatus = ['', '', '', '', '', '', '', '', '',];
+        occupiedCells = 0;
+        possibleIndexForComp = [0,1,2,3,4,5,6,7,8];
+        currentPlayer = 'X';
+        msgg.innerHTML = 'Current player: (<span id="player-sign">X</span>)';
+        for(let i=0; i<9; i++){
+            boxes[i].innerHTML = '';
+            boxes[i].style.pointerEvents = 'all';
+            boxes[i].classList = `box box${i+1}`;
+        }
+        roundNumberEle.innerHTML = Number(roundNumber)+1;
+    }
+}
+
+// For swapping turns
 function swap(){
-    console.log(currentPlayerEle.innerHTML);
-    if(currentPlayerEle.innerHTML === 'X'){
+    let currentPlayerEle = document.querySelector('#player-sign');
+    if(currentPlayer === 'X'){
         currentPlayerEle.innerHTML = 'O';
+        currentPlayer = 'O'
     }
     else{
         currentPlayerEle.innerHTML = 'X';
+        currentPlayer = 'X';
     }
 }
 
@@ -245,12 +328,64 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Eventlistener functions
-async function handleClickComp(index) {
-    // console.log("Hii");
+function checkWin(){
+    for(let i=0; i<winningCongfig.length; i++){
+        if((gameStatus[winningCongfig[i][0]] !== '' || gameStatus[winningCongfig[i][1]] !== '' || gameStatus[winningCongfig[i][0]] !== '') && ((gameStatus[winningCongfig[i][0]] === gameStatus[winningCongfig[i][1]]) && (gameStatus[winningCongfig[i][1]] === gameStatus[winningCongfig[i][2]]))){
+            return true;
+        }
+    }
+    return false;
+}
 
+function playRandomly(){
+    let compMoveIndex = Math.floor(Math.random() * possibleIndexForComp.length);
+    return possibleIndexForComp[compMoveIndex];
+}
+
+function findBestMove(){
+    // find winning move
+    for(let i=0; i<9; i++){
+        console.log(gameStatus[i]);
+        if(gameStatus[i] === ''){
+            gameStatus[i] = currentPlayer;
+            if(checkWin()){
+                gameStatus[i] = '';
+                return i;
+            }
+            gameStatus[i] = '';
+        }
+    }
+
+    // check to block other player's win
+    for(let i=0; i<9; i++){
+        if(gameStatus[i] === ''){
+            gameStatus[i] = currentPlayer === 'X' ? 'O' : 'X';
+            if(checkWin()){
+                gameStatus[i] = '';
+                return i;
+            }
+            gameStatus[i] = '';
+        }
+    }
+
+    // try to take the center
+    if(gameStatus[4] === ''){
+        return 4;
+    }
+    console.log('aao beta');
+
+    // take any possible cell
+    return playRandomly();
+}
+
+
+// Eventlistener functions
+// 1. while playing with computer
+async function handleClickComp(index) {
     if (boxes[index].innerHTML === '') {
-        if (currentPlayerEle.innerHTML === 'X') {
+
+        // Player's move
+        if (currentPlayer === 'X') {
             boxes[index].innerHTML = 'X';
             gameStatus[index] = 'X';
         } else {
@@ -260,60 +395,28 @@ async function handleClickComp(index) {
         swap();
         occupiedCells += 1;
         boxes[index].style.pointerEvents = 'none';
-
-        if (checkGameOver(occupiedCells)) {
+        if(checkMatchOver(occupiedCells)){
             await delay(800);
-            console.log('X-wala');
-            let roundNumber = roundNumberEle.innerHTML;
-            // console.log('game-over ', typeof roundNumber, " ",typeof inputCount);
-            if(roundNumber >= inputCount){
-                let winningMessage;
-
-                if(playerXScoreEle.innerHTML > playerOScoreEle.innerHTML){
-                    winningMessage = 'Congrantulations!<br>Player(X) Won the Game!!!';
-                }
-                else if(playerXScoreEle.innerHTML < playerOScoreEle.innerHTML){
-                    winningMessage = 'Congrantulations!<br>Player(O) Won the Game!!!';
-                }
-                else{
-                    winningMessage = 'Game Tied!';
-                }
-                msgg.innerHTML = `${winningMessage}`;
-                if(!gameLayout.classList.contains('hide')){
-                    gameLayout.classList.add('hide');
-                }
-                if(!roundNumberDiv.classList.contains('hide')){
-                    roundNumberDiv.classList.add('hide');
-                }
-                if(!gameOverMenu.classList.contains('active')){
-                    gameOverMenu.classList.add('active');
-                }
-            }
-            else{
-                gameStatus = ['', '', '', '', '', '', '', '', '',];
-                occupiedCells = 0;
-                possibleIndexForComp = [0,1,2,3,4,5,6,7,8];
-                currentPlayerEle.innerHTML = 'X';
-                for(let i=0; i<9; i++){
-                    boxes[i].innerHTML = '';
-                    boxes[i].style.pointerEvents = 'all';
-                    boxes[i].classList = `box box${i+1}`;
-                }
-                roundNumberEle.innerHTML = Number(roundNumber)+1;
-                msgg.innerHTML = 'Current player: (<span id="player-sign">X</span>)'
-            }
+            checkGameOver();
             return;
         }
-        
-        
-        // Computer move
-        // console.log('rama rama');
-        await delay(200);
-        possibleIndexForComp = possibleIndexForComp.filter(item => item !== index);
-        let compMoveIndex = Math.floor(Math.random() * possibleIndexForComp.length);
-        let compMove = possibleIndexForComp[compMoveIndex];
 
-        if (currentPlayerEle.innerHTML === 'X') {
+        // console.log(`Number of occupied cells: ${occupiedCells}`);
+        // Computer move
+        await delay(200);
+        let compMove;
+        possibleIndexForComp = possibleIndexForComp.filter(item => item !== index);
+        if(difficultyLevel === 'difficult'){
+            compMove = findBestMove();
+        }
+        else{
+            let best = findBestMove();
+            let arr = [best, playRandomly(), best, best, best, playRandomly(), best, playRandomly(), best, best];
+
+            compMove = arr[Math.floor(Math.random()*arr.length)];
+        }
+
+        if (currentPlayer === 'X') {
             boxes[compMove].innerHTML = 'X';
             gameStatus[compMove] = 'X';
         } else {
@@ -324,48 +427,9 @@ async function handleClickComp(index) {
         occupiedCells += 1;
         boxes[compMove].style.pointerEvents = 'none';
         possibleIndexForComp = possibleIndexForComp.filter(item => item !== compMove);
-
-        if (checkGameOver(occupiedCells)) {
+        if(checkMatchOver(occupiedCells)){
             await delay(800);
-            console.log('O-wala');
-            let roundNumber = roundNumberEle.innerHTML;
-            // console.log('game-over ', typeof roundNumber, " ",typeof inputCount);
-            if(roundNumber >= inputCount){
-                let winningMessage;
-                
-                if(playerXScoreEle.innerHTML > playerOScoreEle.innerHTML){
-                    winningMessage = 'Congrantulations!<br>Player(X) Won the Game!!!';
-                }
-                else if(playerXScoreEle.innerHTML < playerOScoreEle.innerHTML){
-                    winningMessage = 'Congrantulations!<br>Player(O) Won the Game!!!';
-                }
-                else{
-                    winningMessage = 'Game Tied!';
-                }
-                msgg.innerHTML = `${winningMessage}`;
-                if(!gameLayout.classList.contains('hide')){
-                    gameLayout.classList.add('hide');
-                }
-                if(!roundNumberDiv.classList.contains('hide')){
-                    roundNumberDiv.classList.add('hide');
-                }
-                if(!gameOverMenu.classList.contains('active')){
-                    gameOverMenu.classList.add('active');
-                }
-            }
-            else{
-                gameStatus = ['', '', '', '', '', '', '', '', '',];
-                occupiedCells = 0;
-                possibleIndexForComp = [0,1,2,3,4,5,6,7,8];
-                currentPlayerEle.innerHTML = 'X';
-                for(let i=0; i<9; i++){
-                    boxes[i].innerHTML = '';
-                    boxes[i].style.pointerEvents = 'all';
-                    boxes[i].classList = `box box${i+1}`;
-                }
-                roundNumberEle.innerHTML = Number(roundNumber)+1;
-                
-            }
+            checkGameOver();
             return;
         }
     }
@@ -373,7 +437,7 @@ async function handleClickComp(index) {
 
 async function handleClickMulti(index){
     if(boxes[index].innerHTML === ''){
-        if (currentPlayerEle.innerHTML === 'X') {
+        if (currentPlayer === 'X') {
             boxes[index].innerHTML = 'X';
             gameStatus[index] = 'X';
         }
@@ -384,47 +448,9 @@ async function handleClickMulti(index){
         swap();
         occupiedCells += 1;
         boxes[index].style.pointerEvents = 'none';
-        if(checkGameOver(occupiedCells)){
+        if(checkMatchOver(occupiedCells)){
             await delay(800);
-            console.log('multi-X-wala');
-            let roundNumber = roundNumberEle.innerHTML;
-            
-            if(roundNumber >= inputCount){
-                let winningMessage;
-
-                if(playerXScoreEle.innerHTML > playerOScoreEle.innerHTML){
-                    winningMessage = 'Congrantulations!<br>Player(X) Won the Game!!!';
-                }
-                else if(playerXScoreEle.innerHTML < playerOScoreEle.innerHTML){
-                    winningMessage = 'Congrantulations!<br>Player(O) Won the Game!!!';
-                }
-                else{
-                    winningMessage = 'Game Tied!';
-                }
-                msgg.innerHTML = `${winningMessage}`;
-                if(!gameLayout.classList.contains('hide')){
-                    gameLayout.classList.add('hide');
-                }
-                if(!roundNumberDiv.classList.contains('hide')){
-                    roundNumberDiv.classList.add('hide');
-                }
-                if(!gameOverMenu.classList.contains('active')){
-                    gameOverMenu.classList.add('active');
-                }
-            }
-            else{
-                gameStatus = ['', '', '', '', '', '', '', '', '',];
-                occupiedCells = 0;
-                possibleIndexForComp = [0,1,2,3,4,5,6,7,8];
-                currentPlayerEle.innerHTML = 'X';
-                for(let i=0; i<9; i++){
-                    boxes[i].innerHTML = '';
-                    boxes[i].style.pointerEvents = 'all';
-                    boxes[i].classList = `box box${i+1}`;
-                }
-                roundNumberEle.innerHTML = Number(roundNumber)+1;
-                msgg.innerHTML = 'Current player: (<span id="player-sign">X</span>)'
-            }
+            checkGameOver();
             return;
         }
     }
@@ -433,15 +459,9 @@ async function handleClickMulti(index){
 function startNewGame(){
     initGame();
     roundNumberEle.innerHTML = '1';
-    if(gameLayout.classList.contains('hide')){
-        gameLayout.classList.remove('hide');
-    }
-    if(roundNumberDiv.classList.contains('hide')){
-        roundNumberDiv.classList.remove('hide');
-    }
-    if(gameOverMenu.classList.contains('active')){
-        gameOverMenu.classList.remove('active');
-    }
+    gameLayoutRemoveHide();
+    roundNumberDivRemoveHide();
+    gameOverMenuRemoveActive();
 }
 
 function backToMenu(){
