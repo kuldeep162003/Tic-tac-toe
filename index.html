@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <div class="title">
+                <h1>Tic Tac Toe</h1>
+                <div class="underline"></div>
+            </div>
+
+            <!-- Background Music -->
+            <div class="game-audio">
+                <audio id="bg-music" src="./assets/game-music-loop-3-144252.mp3" loop></audio>
+                <button class="music-btn" onclick="handleMusic()">
+                    <img class="music-img" src="./assets/music-icon.png" alt="" width="20">
+                    <img id="slash" class="music-img hide" src="./assets/slash.png" alt="" width="23">
+                </button>
+            </div>
+            
+            <!-- Menu -->
+            <div class="menu active">
+                <p class="instruction">Select Player Mode</p>
+                <div class="menu-buttons">
+                    <button class="btn" onclick="showComputerMenu()">Play with computer</button>
+                    <button class="btn" onclick="showMultiMenu()">Multiplayer</button>
+                </div>
+                <div class="submenu-container">
+                    <form id="myform" class="submenu" onsubmit="return playWithComp()">
+                        <p class="diff-title">Select difficulty level</p>
+                        <div class="difficulty-level">
+                            <input type="radio" name="difficulty" id="easy" checked>
+                            <label for="easy" class="radio-label">Easy</label>
+                            <input type="radio" name="difficulty" id="difficult">
+                            <label for="difficult" class="radio-label">Difficult</label>
+                        </div>
+                        <div class="round-input">
+                            <label for="input-count">Enter the number of round you want in one game:</label>
+                            <input type="number" name="input-count" id="input-count" min="1" max="10" required>
+                        </div>
+                        <button class="btn" type="submit">Play</button>
+                    </form>
+                    <form id="myform2" class="submenu" onsubmit="return playMulti()">
+                        <div class="round-input">
+                            <label for="input-count2">Enter the number of round you want in one game:</label>
+                            <input type="number" name="input-count2" id="input-count2" min="1" max="10" required>
+                        </div>
+                        <button class="btn" type="submit">Play</button>
+                    </form>
+                </div>
+            </div>
+    
+            <!-- Game UI -->
+            <div class="game-ui">
+                <div class="game-layout">
+                    <div class="box box1"></div>
+                    <div class="box box2"></div>
+                    <div class="box box3"></div>
+                    <div class="box box4"></div>
+                    <div class="box box5"></div>
+                    <div class="box box6"></div>
+                    <div class="box box7"></div>
+                    <div class="box box8"></div>
+                    <div class="box box9"></div>
+                </div>
+                <div class="round-number-div">
+                    <p>Round: <span id="round-number-ele">1</span></p>
+                </div>
+                <div class="player-turn">
+                    <p id="msgg">Current player: (<span id="player-sign">X</span>)</p>
+                </div>
+                <div class="game-stats">
+                    <div class="stats-divs player1-stats">
+                        <p>Player(X)</p>
+                        <div class="player1-win-count">0</div>
+                    </div>
+                    <div class="stats-divs tie">
+                        <p>Tied Matches</p>
+                        <div class="tie-count">0</div>
+                    </div>
+                    <div class="stats-divs player2-stats">
+                        <p>Player(0)</p>
+                        <div class="player2-win-count">0</div>
+                    </div>
+                </div>
+                <div class="game-over-menu">
+                    <button class="btn" onclick="startNewGame()">New Game</button>
+                    <button class="btn" onclick="backToMenu()">Menu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>
