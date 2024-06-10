@@ -345,7 +345,7 @@ function playRandomly(){
 function findBestMove(){
     // find winning move
     for(let i=0; i<9; i++){
-        console.log(gameStatus[i]);
+        // console.log(gameStatus[i]);
         if(gameStatus[i] === ''){
             gameStatus[i] = currentPlayer;
             if(checkWin()){
@@ -372,7 +372,6 @@ function findBestMove(){
     if(gameStatus[4] === ''){
         return 4;
     }
-    console.log('aao beta');
 
     // take any possible cell
     return playRandomly();
