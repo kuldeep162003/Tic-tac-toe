@@ -279,6 +279,7 @@ input[type = radio]{
     display: block;
     transform-origin: center;
     animation: 0.3s ease-in showCompMenu;
+    margin-bottom: 5rem;
 }
 
 @keyframes showCompMenu {
@@ -550,7 +551,7 @@ input[type=number]::-webkit-inner-spin-button {
 @media (width <= 1000px) {
     .game-audio{
         position: absolute;
-        top: 120px;
+        top: 115px;
         left: 50%;
         transform: translateX(-50%);
     }
@@ -561,7 +562,7 @@ input[type=number]::-webkit-inner-spin-button {
 
 @media (width <= 620px) {
     .game-audio{
-        top: 140px;
+        top: 130px;
     }
     .title{
         margin-bottom: 6.5rem;
@@ -592,7 +593,7 @@ input[type=number]::-webkit-inner-spin-button {
 }
 @media (width <= 304px) {
     .game-audio{
-        top: 210px;
+        top: 185px;
     }
     .difficulty-level{
         display: flex;
