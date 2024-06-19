@@ -279,7 +279,7 @@ input[type = radio]{
     display: block;
     transform-origin: center;
     animation: 0.3s ease-in showCompMenu;
-    margin-bottom: 5rem;
+    padding-bottom: 5rem;
 }
 
 @keyframes showCompMenu {
