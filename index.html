@@ -9,12 +9,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="wrapper">
         <div class="container">
             <div class="title">
-                <h1>Tic Tac Toe</h1>
+                <h1>Tic <span>Tac</span> Toe</h1>
                 <div class="underline"></div>
             </div>
 
@@ -29,38 +30,63 @@
             
             <!-- Menu -->
             <div class="menu active">
-                <p class="instruction">Select Player Mode</p>
-                <div class="menu-buttons">
-                    <button class="btn" onclick="showComputerMenu()">Play with computer</button>
-                    <button class="btn" onclick="showMultiMenu()">Multiplayer</button>
+                <div class="main-menu-cont">
+                    <p class="instruction">Select Player Mode</p>
+                    <div class="menu-buttons">
+                        <input type="radio" name="gameType" id="playWithComp">
+                        <label class="radio-btn" for="playWithComp" onclick="showComputerMenu()">v/s Computer</label>
+                        <input type="radio" name="gameType" id="multiplayer">
+                        <label class="radio-btn" for="multiplayer" onclick="showMultiMenu()">Multiplayer</label>
+
+                        <!-- <button class="btn" onclick="showComputerMenu()">Play with computer</button>
+                        <button class="btn" onclick="showMultiMenu()">Multiplayer</button> -->
+                    </div>
                 </div>
-                <div class="submenu-container">
-                    <form id="myform" class="submenu" onsubmit="return playWithComp()">
-                        <p class="diff-title">Select difficulty level</p>
-                        <div class="difficulty-level">
-                            <input type="radio" name="difficulty" id="easy" checked>
-                            <label for="easy" class="radio-label">Easy</label>
-                            <input type="radio" name="difficulty" id="difficult">
-                            <label for="difficult" class="radio-label">Difficult</label>
-                        </div>
-                        <div class="round-input">
-                            <label for="input-count">Enter the number of round you want in one game:</label>
-                            <input type="number" name="input-count" id="input-count" min="1" max="10" required>
-                        </div>
-                        <button class="btn" type="submit">Play</button>
-                    </form>
-                    <form id="myform2" class="submenu" onsubmit="return playMulti()">
-                        <div class="round-input">
-                            <label for="input-count2">Enter the number of round you want in one game:</label>
-                            <input type="number" name="input-count2" id="input-count2" min="1" max="10" required>
-                        </div>
-                        <button class="btn" type="submit">Play</button>
-                    </form>
+                <div class="decoy-container">
+                    <div class="submenu-container">
+                        <form id="myform" class="submenu" onsubmit="return playWithComp()">
+                            <p class="diff-title">Select difficulty level</p>
+                            <div class="difficulty-level">
+                                <input type="radio" name="difficulty" id="easy" checked>
+                                <label for="easy" class="radio-label" id="easy-label">Easy</label>
+                                <input type="radio" name="difficulty" id="difficult">
+                                <label for="difficult" class="radio-label" id="diff-label">Difficult</label>
+                            </div>
+                            <div class="round-input">
+                                <label for="input-count">Enter the number of round you want in one game:</label>
+                                <input type="number" name="input-count" id="input-count" min="1" max="10" required>
+                            </div>
+                            <button class="btn play-btn" type="submit">Play</button>
+                        </form>
+                        <form id="myform2" class="submenu" onsubmit="return playMulti()">
+                            <div class="round-input">
+                                <label for="input-count2">Enter the number of round you want in one game:</label>
+                                <input type="number" name="input-count2" id="input-count2" min="1" max="10" required>
+                            </div>
+                            <button class="btn play-btn" type="submit">Play</button>
+                        </form>
+                    </div>
                 </div>
             </div>
     
             <!-- Game UI -->
             <div class="game-ui">
+                <div class="overgrid-menu">
+                    <div class="mark-menu">
+                        <p style="text-align: center; font-size: 0.6rem;">PICK YOUR MARK: </p>
+                        <div class="mark-choice-container">
+                            <input type="radio" name="mark" id="x-mark" checked>
+                            <label for="x-mark" id="x-mark-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="24" height="24""><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#31C4BE" d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg></label>
+                            <input type="radio" name="mark" id="o-mark">
+                            <label for="o-mark" id="o-mark-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="19" height="19" style="margin: 0.2rem 0.185rem;"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2b238" d="M224 96a160 160 0 1 0 0 320 160 160 0 1 0 0-320zM448 256A224 224 0 1 1 0 256a224 224 0 1 1 448 0z"/></svg></label>
+                        </div>
+                    </div>
+                    <div class="overgrid-menu-button-cont">
+                        <button class="btn overgrid-button" onclick="backToMenu()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#192A32" d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></button>
+                        <button class="btn start-button" onclick="startGame()">START</button>
+                        <button class="btn overgrid-button" onclick="replayGame()" style="padding: 0.23rem 0.32rem;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#192A32" d="M386.3 160H336c-17.7 0-32 14.3-32 32s14.3 32 32 32H464c17.7 0 32-14.3 32-32V64c0-17.7-14.3-32-32-32s-32 14.3-32 32v51.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0s-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3s163.8-62.5 226.3 0L386.3 160z"/></svg></button>
+                    </div>
+                </div>
                 <div class="game-layout">
                     <div class="box box1"></div>
                     <div class="box box2"></div>
@@ -84,7 +110,7 @@
                         <div class="player1-win-count">0</div>
                     </div>
                     <div class="stats-divs tie">
-                        <p>Tied Matches</p>
+                        <p>Draws</p>
                         <div class="tie-count">0</div>
                     </div>
                     <div class="stats-divs player2-stats">
