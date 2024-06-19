@@ -86,6 +86,21 @@ function form2AddHide(){
         form2.classList.add('hide');
     }
 }
+function markMenuAddHide(){
+    if(!markMenu.classList.contains('hide')){
+        markMenu.classList.add('hide')
+    }
+}
+function markMenuRemoveHide(){
+    if(markMenu.classList.contains('hide')){
+        markMenu.classList.remove('hide')
+    }
+}
+function overGridMenuRemoveHide(){
+    if(overGridMenu.classList.contains('hide')){
+        overGridMenu.classList.remove('hide');
+    }
+}
 function gameLayoutRemoveHide(){
     if(gameLayout.classList.contains('hide')){
         gameLayout.classList.remove('hide');
@@ -128,6 +143,13 @@ function menuAddActive(){
 
 // For handling User input of play-with-computer and multiplayer
 const roundNumberEle = document.querySelector('#round-number-ele');
+const markMenu = document.querySelector('.mark-menu');
+const overGridMenu = document.querySelector('.overgrid-menu');
+const xMarkLabel = document.querySelector('#x-mark-label');
+const oMarkLabel = document.querySelector('#o-mark-label');
+const xMark = document.querySelector('#x-mark');
+const oMark = document.querySelector('#o-mark');
+const startBtn = document.querySelector('.start-button');
 const gameLayout = document.querySelector('.game-layout');
 const roundNumberDiv = document.querySelector('.round-number-div');
 const menu = document.querySelector('.menu');
@@ -135,10 +157,14 @@ const gameUI = document.querySelector('.game-ui');
 const listeners = [];
 let inputCount;
 let difficultyLevel;
+let againstCompMode = false;
+let multiplayerMode = false;
 
 
 function playWithComp(){
     initGame();
+    againstCompMode = true;
+    multiplayerMode = false;
     roundNumberEle.innerHTML = '1';
     difficultyLevel = document.querySelector('input[type = "radio"]:checked').id;
     inputCount = document.querySelector('#input-count').value;
@@ -147,14 +173,15 @@ function playWithComp(){
     menuRemoveActive();
     form1AddHide();
     form2AddHide();
+    markMenuRemoveHide();
+    overGridMenuRemoveHide();
     gameLayoutRemoveHide();
     roundNumberDivRemoveHide();
     gameUIAddActive();
     
     removePreviousListenersFromCells();
-
     for(let index = 0; index<9; index++){
-        
+    
         listeners[index] = () => handleClickComp(index);
 
         boxes[index].addEventListener('click', listeners[index]);
@@ -165,20 +192,24 @@ function playWithComp(){
 
 function playMulti(){
     initGame();
+    againstCompMode = false;
+    multiplayerMode = true;
     roundNumberEle.innerHTML = '1';
     inputCount = document.querySelector('#input-count2').value;
 
     menuRemoveActive();
     form1AddHide();
     form2AddHide();
+    markMenuAddHide();
+    overGridMenuRemoveHide();
     gameLayoutRemoveHide();
     roundNumberDivRemoveHide();
     gameUIAddActive();
 
     removePreviousListenersFromCells();
-
+    
     for(let index = 0; index<9; index++){
-        
+            
         listeners[index] = () => handleClickMulti(index);
 
         boxes[index].addEventListener('click', listeners[index]);
@@ -209,24 +240,73 @@ let gameStatus;
 let possibleIndexForComp;
 let occupiedCells
 let msgg = document.querySelector('#msgg');
+let gameStarted = false;
 
 function initGame(){
     gameStatus = ['', '', '', '', '', '', '', '', '',];
     currentPlayer = 'X'
     occupiedCells = 0;
+    gameStarted = false;
     possibleIndexForComp = [0,1,2,3,4,5,6,7,8];
     playerXScoreEle.innerHTML = '0';
     playerOScoreEle.innerHTML = '0';
     tieEle.innerHTML = '0';
+    xMarkLabel.style.pointerEvents = 'all'
+    oMarkLabel.style.pointerEvents = 'all'
+    startBtn.style.scale = '1';
     for(let i=0; i<9; i++){
         boxes[i].innerHTML = '';
-        boxes[i].style.pointerEvents = 'all';
+        // boxes[i].style.pointerEvents = 'all';
+        boxes[i].style.pointerEvents = 'none';
         boxes[i].classList = `box box${i+1}`;
     }
     msgg.innerHTML = 'Current player: (<span id="player-sign">X</span>)';
 
     gameOverMenuRemoveActive();
     gameUIAddActive();
+}
+
+
+async function startGame(){
+    startBtn.style.scale = '0';
+    gameStarted = true;
+    for(let i=0; i<9; i++){
+        boxes[i].style.pointerEvents = 'all';
+    }
+    if(xMarkLabel.style.pointerEvents === 'all'){
+        xMarkLabel.style.pointerEvents = 'none';
+    }
+    if(oMarkLabel.style.pointerEvents === 'all'){
+        oMarkLabel.style.pointerEvents = 'none';
+    }
+    if(againstCompMode && oMark.checked){
+        // Computer move
+        await delay(200);
+        let compMove;
+        if(difficultyLevel === 'difficult'){
+            compMove = findBestMove();
+        }
+        else{
+            let best = findBestMove();
+            let arr = [best, playRandomly(), best, best, best, playRandomly(), best, playRandomly(), best, best];
+
+            compMove = arr[Math.floor(Math.random()*arr.length)];
+        }
+
+        if (currentPlayer === 'X') {
+            boxes[compMove].innerHTML = 'X';
+            boxes[compMove].style.color = '#31C4BE';
+            gameStatus[compMove] = 'X';
+        } else {
+            boxes[compMove].innerHTML = 'O';
+            boxes[compMove].style.color = '#f2b237';
+            gameStatus[compMove] = 'O';
+        }
+        swap();
+        occupiedCells += 1;
+        boxes[compMove].style.pointerEvents = 'none';
+        possibleIndexForComp = possibleIndexForComp.filter(item => item !== compMove);
+    }
 }
 
 function showMenu(){
@@ -271,7 +351,7 @@ function checkMatchOver(occupiedCells){
     return false;
 }
 
-function checkGameOver(){
+async function checkGameOver(){
     let roundNumber = roundNumberEle.innerHTML;
     if(roundNumber >= inputCount){
         let winningMessage;
@@ -286,6 +366,9 @@ function checkGameOver(){
             winningMessage = 'Game Tied!';
         }
         msgg.innerHTML = `${winningMessage}`;
+        if(!overGridMenu.classList.contains('hide')){
+            overGridMenu.classList.add('hide');
+        }
         if(!gameLayout.classList.contains('hide')){
             gameLayout.classList.add('hide');
         }
@@ -308,6 +391,77 @@ function checkGameOver(){
             boxes[i].classList = `box box${i+1}`;
         }
         roundNumberEle.innerHTML = Number(roundNumber)+1;
+        if(againstCompMode && oMark.checked){
+            // Computer move
+            await delay(200);
+            let compMove;
+            if(difficultyLevel === 'difficult'){
+                compMove = findBestMove();
+            }
+            else{
+                let best = findBestMove();
+                let arr = [best, playRandomly(), best, best, best, playRandomly(), best, playRandomly(), best, best];
+
+                compMove = arr[Math.floor(Math.random()*arr.length)];
+            }
+
+            if (currentPlayer === 'X') {
+                boxes[compMove].innerHTML = 'X';
+                boxes[compMove].style.color = '#31C4BE';
+                gameStatus[compMove] = 'X';
+            } else {
+                boxes[compMove].innerHTML = 'O';
+                boxes[compMove].style.color = '#f2b237';
+                gameStatus[compMove] = 'O';
+            }
+            swap();
+            occupiedCells += 1;
+            boxes[compMove].style.pointerEvents = 'none';
+            possibleIndexForComp = possibleIndexForComp.filter(item => item !== compMove);
+        }
+    }
+}
+
+async function replayGame(){
+    if(gameStarted){
+        gameStatus = ['', '', '', '', '', '', '', '', '',];
+        occupiedCells = 0;
+        possibleIndexForComp = [0,1,2,3,4,5,6,7,8];
+        currentPlayer = 'X';
+        msgg.innerHTML = 'Current player: (<span id="player-sign">X</span>)';
+        for(let i=0; i<9; i++){
+            boxes[i].innerHTML = '';
+            boxes[i].style.pointerEvents = 'all';
+            boxes[i].classList = `box box${i+1}`;
+        }
+        if(againstCompMode && oMark.checked){
+            // Computer move
+            await delay(200);
+            let compMove;
+            if(difficultyLevel === 'difficult'){
+                compMove = findBestMove();
+            }
+            else{
+                let best = findBestMove();
+                let arr = [best, playRandomly(), best, best, best, playRandomly(), best, playRandomly(), best, best];
+    
+                compMove = arr[Math.floor(Math.random()*arr.length)];
+            }
+    
+            if (currentPlayer === 'X') {
+                boxes[compMove].innerHTML = 'X';
+                boxes[compMove].style.color = '#31C4BE';
+                gameStatus[compMove] = 'X';
+            } else {
+                boxes[compMove].innerHTML = 'O';
+                boxes[compMove].style.color = '#f2b237';
+                gameStatus[compMove] = 'O';
+            }
+            swap();
+            occupiedCells += 1;
+            boxes[compMove].style.pointerEvents = 'none';
+            possibleIndexForComp = possibleIndexForComp.filter(item => item !== compMove);
+        }
     }
 }
 
@@ -382,13 +536,14 @@ function findBestMove(){
 // 1. while playing with computer
 async function handleClickComp(index) {
     if (boxes[index].innerHTML === '') {
-
         // Player's move
         if (currentPlayer === 'X') {
             boxes[index].innerHTML = 'X';
+            boxes[index].style.color = '#31C4BE';
             gameStatus[index] = 'X';
         } else {
             boxes[index].innerHTML = 'O';
+            boxes[index].style.color = '#f2b237';
             gameStatus[index] = 'O';
         }
         swap();
@@ -417,9 +572,11 @@ async function handleClickComp(index) {
 
         if (currentPlayer === 'X') {
             boxes[compMove].innerHTML = 'X';
+            boxes[compMove].style.color = '#31C4BE';
             gameStatus[compMove] = 'X';
         } else {
             boxes[compMove].innerHTML = 'O';
+            boxes[compMove].style.color = '#f2b237';
             gameStatus[compMove] = 'O';
         }
         swap();
@@ -438,10 +595,12 @@ async function handleClickMulti(index){
     if(boxes[index].innerHTML === ''){
         if (currentPlayer === 'X') {
             boxes[index].innerHTML = 'X';
+            boxes[index].style.color = '#31C4BE';
             gameStatus[index] = 'X';
         }
         else {
             boxes[index].innerHTML = 'O';
+            boxes[index].style.color = '#f2b237';
             gameStatus[index] = 'O';
         }
         swap();
@@ -458,6 +617,7 @@ async function handleClickMulti(index){
 function startNewGame(){
     initGame();
     roundNumberEle.innerHTML = '1';
+    overGridMenuRemoveHide();
     gameLayoutRemoveHide();
     roundNumberDivRemoveHide();
     gameOverMenuRemoveActive();
@@ -466,5 +626,7 @@ function startNewGame(){
 function backToMenu(){
     form2.reset();
     form1.reset();
+    document.getElementById('playWithComp').checked = false;
+    document.getElementById('multiplayer').checked = false;
     showMenu();
 }
