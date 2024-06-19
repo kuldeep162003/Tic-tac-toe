@@ -422,7 +422,7 @@ async function checkGameOver(){
     }
 }
 
-async function replayGame(){
+function replayGame(){
     if(gameStarted){
         gameStatus = ['', '', '', '', '', '', '', '', '',];
         occupiedCells = 0;
@@ -436,7 +436,6 @@ async function replayGame(){
         }
         if(againstCompMode && oMark.checked){
             // Computer move
-            await delay(200);
             let compMove;
             if(difficultyLevel === 'difficult'){
                 compMove = findBestMove();
