@@ -166,7 +166,7 @@ function playWithComp(){
     againstCompMode = true;
     multiplayerMode = false;
     roundNumberEle.innerHTML = '1';
-    difficultyLevel = document.querySelector('input[type = "radio"]:checked').id;
+    difficultyLevel = document.querySelector('.difficulty-level input[type = "radio"]:checked').id;
     inputCount = document.querySelector('#input-count').value;
     // console.log(menu);
     
